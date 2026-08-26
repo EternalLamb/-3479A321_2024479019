@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Solitario Ingles',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const Text('Hello World fellas'),
+      home: const Text('Hello World'),
     );
   }
 }
@@ -45,4 +45,42 @@ Widget build(BuildContext context) {
       ),
     ),
   );
-}}
+}
+ Widget _gameBoard()
+ {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: AspectRatio(
+        aspectRatio: 1.0,
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            childAspectSpacing: 2.0,
+            mainAxisSpacing: 2.0,
+          ),
+          itemCount: 49, // 7x7 
+          itemBuilder: (context, index) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[400],
+                border: Border.all(color: Colors.grey[600]!, width: 1.5),
+              ),
+              child: Center(
+                child: Text(
+                  '$index',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              )
+            );
+          },
+        )
+      )  
+    )
+  )
+ }
+
+
+
+}
