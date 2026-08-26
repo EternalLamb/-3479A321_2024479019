@@ -4,11 +4,10 @@ void main() {
   runApp(const MyApp());
 }
 
-/// Estados de la celda en el tablero.
 enum CellType {
-  voidCell, // Fuera de límites jugables (Esquinas 2x2)
-  emptyHole, // Casilla jugable desocupada
-  occupiedPeg, // Casilla jugable con clavija presente
+  voidCell, 
+  emptyHole, 
+  occupiedPeg,
 }
 
 class MyApp extends StatelessWidget {
@@ -30,18 +29,17 @@ class PegSolitaireScreen extends StatelessWidget {
 
   static const int gridSize = 7;
 
-  /// Determina el tipo de celda según sus coordenadas matriciales (row, col)
   CellType _getCellType(int row, int col) {
-    // Esquinas 2x2 no jugables en el tablero inglés estándar
+    
     final bool isCorner = (row < 2 || row > 4) && (col < 2 || col > 4);
     if (isCorner) {
       return CellType.voidCell;
     }
-    // El centro (3,3) empieza vacío en el juego estándar
+    
     if (row == 3 && col == 3) {
       return CellType.emptyHole;
     }
-    // Las 32 posiciones restantes inician ocupadas
+    
     return CellType.occupiedPeg;
   }
 
@@ -65,7 +63,7 @@ class PegSolitaireScreen extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
-            // Área de Juego
+            // Area de Juego
             Expanded(
               child: _gameBoard(),
             ),
@@ -88,7 +86,7 @@ class PegSolitaireScreen extends StatelessWidget {
               crossAxisSpacing: 2.0,
               mainAxisSpacing: 2.0,
             ),
-            itemCount: gridSize * gridSize, // 49 casillas
+            itemCount: gridSize * gridSize, // 7x7 casillas
             itemBuilder: (context, index) {
               final int row = index ~/ gridSize;
               final int col = index % gridSize;
@@ -107,7 +105,6 @@ class PegSolitaireScreen extends StatelessWidget {
   }
 }
 
-/// Widget representativo para cada casilla del tablero
 class PegCell extends StatelessWidget {
   final int row;
   final int col;
@@ -126,12 +123,11 @@ class PegCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Si es una celda no jugable (esquinas), se deja transparente
+    
     if (type == CellType.voidCell) {
       return const SizedBox.shrink();
     }
 
-    // 2. Renderizado para celdas válidas (ocupadas o huecos vacíos)
     return GestureDetector(
       onTap: onTap,
       child: Container(
