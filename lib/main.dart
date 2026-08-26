@@ -5,6 +5,14 @@ void main() {
   runApp(const MyApp());
 }
 
+/// Estados de la celda en el tablero.
+enum CellType {
+voidCell, // Fuera de límites jugables (Esquinas 2x2)
+emptyHole, // Casilla jugable desocupada
+occupiedPeg, // Casilla jugable con clavija presente
+}
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -22,6 +30,19 @@ class MyApp extends StatelessWidget {
 
 class PegSolitaireScreen extends StatelessWidget {
   const PegSolitaireScreen({super.key});
+
+  static const int gridSize = 7;
+  static const int totalCells = gridSize * gridSize; // 49 casillas
+  /// Determina el tipo de celda según sus coordenadas matriciales (row, col)
+  CellType _getCellType(int row, int col) {
+  // Esquinas 2x2 no jugables en el tablero inglés estándar
+  final bool isCorner = (row < 2 || row > 4) && (col < 2 || col > 4);
+  if (isCorner) {
+  return CellType.voidCell;
+  }
+  // El resto de las 33 posiciones inician ocupadas
+ return CellType.occupiedPeg;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -68,26 +89,45 @@ class PegSolitaireScreen extends StatelessWidget {
             ),
             itemCount: 49, // 7x7 
             itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  border: Border.all(color: Colors.grey[600]!, width: 1.5),
-                ),
-                child: Center(
-                  child: Text(
-                    '$index',
-                    style: const TextStyle(
-                      fontSize: 16, 
-                      fontWeight: FontWeight.bold, 
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              );
-            },
+ // Convertir el índice en coordenadas matriciales
+ final int row = index ~/ gridSize;
+ final int col = index % gridSize;
+ final CellType cellType = _getCellType(row, col);
+ return Container(
+ decoration: BoxDecoration(
+ color: Colors.grey[400],
+ border: Border.all(color: Colors.grey[600]!, width: 1.5),
+ ),
+ child: Center(
+ child: cellType == CellType.occupiedPeg
+ ? Container(
+ width: 30,
+ height: 30,
+ decoration: const BoxDecoration(
+ color: Colors.blue,
+shape: BoxShape.circle,
+ ),
+ )
+ : cellType == CellType.emptyHole
+ ? Container(
+ width: 30,
+ height: 30,
+ decoration: const BoxDecoration(
+ color: Colors.white,
+shape: BoxShape.circle,
+ ),
+ )
+ : null, // No dibuja nada para voidCell
+ ),
+ );
+ },
+
           ),
         ),
       ),
     );
   }
+
+  
+
 }
