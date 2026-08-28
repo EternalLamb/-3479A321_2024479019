@@ -4,11 +4,7 @@ void main() {
   runApp(const MyApp());
 }
 
-enum CellType {
-  voidCell, 
-  emptyHole, 
-  occupiedPeg,
-}
+enum CellType { voidCell, emptyHole, occupiedPeg }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -30,25 +26,22 @@ class PegSolitaireScreen extends StatelessWidget {
   static const int gridSize = 7;
 
   CellType _getCellType(int row, int col) {
-    
     final bool isCorner = (row < 2 || row > 4) && (col < 2 || col > 4);
     if (isCorner) {
       return CellType.voidCell;
     }
-    
+
     if (row == 3 && col == 3) {
       return CellType.emptyHole;
     }
-    
+
     return CellType.occupiedPeg;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Solitario Inglés'),
-      ),
+      appBar: AppBar(title: const Text('Solitario Inglés')),
       body: SafeArea(
         child: Column(
           children: [
@@ -64,9 +57,7 @@ class PegSolitaireScreen extends StatelessWidget {
             ),
             const Divider(height: 1),
             // Area de Juego
-            Expanded(
-              child: _gameBoard(),
-            ),
+            Expanded(child: _gameBoard()),
           ],
         ),
       ),
@@ -92,13 +83,9 @@ class PegSolitaireScreen extends StatelessWidget {
               final int col = index % gridSize;
               final CellType cellType = _getCellType(row, col);
 
-              return PegCell(
-                row: row,
-                col: col,
-                type: cellType,
-              );
+              return PegCell(row: row, col: col, type: cellType);
             },
-          ),   
+          ),
         ),
       ),
     );
@@ -123,7 +110,6 @@ class PegCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     if (type == CellType.voidCell) {
       return const SizedBox.shrink();
     }
@@ -142,19 +128,15 @@ class PegCell extends StatelessWidget {
         child: Center(
           child: type == CellType.occupiedPeg
               ? Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: Colors.blue[800],
+                  width: 30,
+                  height: 30,
+                  decoration: const BoxDecoration(
+                    color: Colors.blue,
                     shape: BoxShape.circle,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 3,
-                        offset: Offset(1, 2),
-                      ),
-                    ],
                   ),
+                  child: isSelected
+                      ? const Icon(Icons.check, color: Colors.white, size: 20)
+                      : Image.asset('assets/icons/BluePill.png'),
                 )
               : Container(
                   width: 14,
