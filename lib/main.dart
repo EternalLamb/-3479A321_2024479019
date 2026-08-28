@@ -98,7 +98,7 @@ class PegSolitaireScreen extends StatelessWidget {
                 type: cellType,
               );
             },
-          ),
+          ),   
         ),
       ),
     );
