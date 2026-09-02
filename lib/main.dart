@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab_moviles/app_theme.dart' as app_theme;
 
 import 'ui/screens/PegSolitaireScreen.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Solitario Inglés',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: app_theme.AppTheme.lightTheme,
       home: const PegSolitaireScreen(),
     );
   }
