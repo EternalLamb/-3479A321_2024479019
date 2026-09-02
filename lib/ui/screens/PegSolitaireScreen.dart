@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../widgets/PegCell.dart';
 import '../../core/enums/CellType.dart';
+import 'RulesScreen.dart';
+
+import 'package:logger/logger.dart';
 
 class PegSolitaireScreen extends StatelessWidget {
   const PegSolitaireScreen({super.key});
 
   static const int gridSize = 7;
+  static final Logger _logger = Logger();
 
   CellType _getCellType(int row, int col) {
     final bool isCorner = (row < 2 || row > 4) && (col < 2 || col > 4);
@@ -24,7 +28,23 @@ class PegSolitaireScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Solitario Inglés')),
+      appBar: AppBar(
+        title: const Text('Solitario Inglés'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            tooltip: 'Ayuda',
+            onPressed: () {
+              _logger.i('Navegande a Rules desde PegSolitaireScreen');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RulesScreen()),
+              );
+              // Handle info button press
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
