@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 class RulesScreen extends StatelessWidget {
   const RulesScreen({super.key});
 
-  static final Logger _logger = Logger();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

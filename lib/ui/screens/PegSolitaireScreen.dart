@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab_moviles/models/GameRecord.dart';
 
 import '../widgets/PegCell.dart';
 import '../../core/enums/CellType.dart';
@@ -7,10 +8,19 @@ import 'RulesScreen.dart';
 import 'package:logger/logger.dart';
 
 class PegSolitaireScreen extends StatelessWidget {
-  const PegSolitaireScreen({super.key});
+  PegSolitaireScreen({super.key});
 
   static const int gridSize = 7;
   static final Logger _logger = Logger();
+
+  final GameRecord _lastGameRecord = GameRecord(
+    date: DateTime.now(),
+    remainingPegs: 32,
+    totalMoves: 0,
+    durationSeconds: 0,
+    isVictory: false,
+    id: '',
+  );
 
   CellType _getCellType(int row, int col) {
     final bool isCorner = (row < 2 || row > 4) && (col < 2 || col > 4);
@@ -35,7 +45,8 @@ class PegSolitaireScreen extends StatelessWidget {
             icon: const Icon(Icons.help_outline),
             tooltip: 'Ayuda',
             onPressed: () {
-              _logger.i('Navegande a Rules desde PegSolitaireScreen');
+              _logger.i('Navegando a Rules desde PegSolitaireScreen');
+              _logger.i('Último registro de juego: $_lastGameRecord');
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const RulesScreen()),
