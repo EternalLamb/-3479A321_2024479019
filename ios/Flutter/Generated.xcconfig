@@ -1,7 +1,7 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=C:\src\flutter
-FLUTTER_APPLICATION_PATH=C:\Users\benja\AndroidStudioProjects\Lab_Moviles
-FLUTTER_FRAMEWORK_SWIFT_PACKAGE_PATH=C:\Users\benja\AndroidStudioProjects\Lab_Moviles\ios\Flutter\ephemeral\Packages\.packages\FlutterFramework
+FLUTTER_APPLICATION_PATH=C:\Users\benja\OneDrive\Documentos\GitHub\-3479A321_2024479019
+FLUTTER_FRAMEWORK_SWIFT_PACKAGE_PATH=C:\Users\benja\OneDrive\Documentos\GitHub\-3479A321_2024479019\ios\Flutter\ephemeral\Packages\.packages\FlutterFramework
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_TARGET=lib\main.dart
 FLUTTER_BUILD_DIR=build
