@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lab_moviles/app_theme.dart' as app_theme;
-import 'package:lab_moviles/models/GameRecord.dart';
 
-import 'ui/screens/PegSolitaireScreen.dart';
+import 'ui/screens/MenuScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Solitario Inglés',
       debugShowCheckedModeBanner: false,
       theme: app_theme.AppTheme.lightTheme,
-      home: PegSolitaireScreen(),
+      home: MenuScreen(),
     );
   }
 }
