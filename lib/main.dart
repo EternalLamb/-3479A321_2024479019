@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:lab_moviles/app_theme.dart' as app_theme;
+import 'package:lab_moviles/ui/screens/PegSolitaireScreen.dart';
+import 'package:lab_moviles/ui/screens/RulesScreen.dart';
+import 'package:lab_moviles/ui/screens/HistoryScreen.dart';
 
 import 'ui/screens/MenuScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const PegSolitaireApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PegSolitaireApp extends StatelessWidget {
+  const PegSolitaireApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Solitario Inglés',
-      debugShowCheckedModeBanner: false,
-      theme: app_theme.AppTheme.lightTheme,
-      home: MenuScreen(),
+      initialRoute: '/', // Inicia en la ruta del menú
+      routes: {
+        '/': (context) => const MenuScreen(),
+        '/game': (context) => PegSolitaireScreen(),
+        '/history': (context) => const HistoryScreen(),
+        '/rules': (context) => const RulesScreen(),
+      },
     );
   }
 }
