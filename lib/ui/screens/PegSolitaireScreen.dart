@@ -1,105 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:lab_moviles/models/GameRecord.dart';
+import 'package:lab_moviles/ui/screens/HistoryScreen.dart';
 
-import '../widgets/PegCell.dart';
-import '../../core/enums/CellType.dart';
-import 'RulesScreen.dart';
+class PegSolitaireScreen extends StatefulWidget {
+  const PegSolitaireScreen({super.key});
 
-import 'package:logger/logger.dart';
+  @override
+  State<PegSolitaireScreen> createState() => _PegSolitaireScreenState();
+}
 
-class PegSolitaireScreen extends StatelessWidget {
-  PegSolitaireScreen({super.key});
+class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
+  // Lista donde se almacenan los registros de partidas jugadas en la sesión
+  final List<GameRecord> _gameHistory = [];
 
-  static const int gridSize = 7;
-  static final Logger _logger = Logger();
+  // Método para guardar una nueva partida finalizada
+  void _saveGameRecord({
+    required int remainingPegs,
+    required int totalMoves,
+    required int durationSeconds,
+    required bool isVictory,
+  }) {
+    final newRecord = GameRecord(
+      id: 'REC-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+      date: DateTime.now(),
+      remainingPegs: remainingPegs,
+      totalMoves: totalMoves,
+      durationSeconds: durationSeconds,
+      isVictory: isVictory,
+    );
 
-  final GameRecord _lastGameRecord = GameRecord(
-    date: DateTime.now(),
-    remainingPegs: 32,
-    totalMoves: 0,
-    durationSeconds: 0,
-    isVictory: false,
-    id: '',
-  );
-
-  CellType _getCellType(int row, int col) {
-    final bool isCorner = (row < 2 || row > 4) && (col < 2 || col > 4);
-    if (isCorner) {
-      return CellType.voidCell;
-    }
-
-    if (row == 3 && col == 3) {
-      return CellType.emptyHole;
-    }
-
-    return CellType.occupiedPeg;
+    setState(() {
+      _gameHistory.insert(
+        0,
+        newRecord,
+      ); // Agrega al inicio para mostrar primero la más reciente
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Solitario Inglés'),
+        title: const Text('Solitario de Clavijas'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline),
-            tooltip: 'Ayuda',
+            icon: const Icon(Icons.history),
+            tooltip: 'Ver Historial',
             onPressed: () {
-              _logger.i('Navegando a Rules desde PegSolitaireScreen');
-              _logger.i('Último registro de juego: $_lastGameRecord');
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const RulesScreen()),
+                MaterialPageRoute(
+                  builder: (context) => HistoryScreen(records: _gameHistory),
+                ),
               );
-              // Handle info button press
             },
           ),
         ],
       ),
-      body: SafeArea(
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              height: 60,
-              color: Colors.grey[300],
-              child: const Center(
-                child: Text(
-                  'STATUS: 0 segundos | Piezas restantes: 32',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
+            const Text(
+              '¡Pantalla de Juego!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const Divider(height: 1),
-            // Area de Juego
-            Expanded(child: _gameBoard()),
+            const SizedBox(height: 20),
+            // Botón de prueba para simular la finalización de una partida
+            ElevatedButton(
+              onPressed: () {
+                _saveGameRecord(
+                  remainingPegs: 1,
+                  totalMoves: 31,
+                  durationSeconds: 120,
+                  isVictory: true,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Partida simulada guardada en el historial'),
+                  ),
+                );
+              },
+              child: const Text('Simular Ganar Partida'),
+            ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _gameBoard() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: AspectRatio(
-          aspectRatio: 1.0,
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: gridSize,
-              crossAxisSpacing: 2.0,
-              mainAxisSpacing: 2.0,
-            ),
-            itemCount: gridSize * gridSize, // 7x7 casillas
-            itemBuilder: (context, index) {
-              final int row = index ~/ gridSize;
-              final int col = index % gridSize;
-              final CellType cellType = _getCellType(row, col);
-
-              return PegCell(row: row, col: col, type: cellType);
-            },
-          ),
         ),
       ),
     );

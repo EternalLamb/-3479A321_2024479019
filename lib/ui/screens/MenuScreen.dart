@@ -41,12 +41,7 @@ class MenuScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HistoryScreen(),
-                  ),
-                );
+                Navigator.pushNamed(context, '/history');
               },
               child: const Text('Historial de Juego'),
             ),
