@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lab_moviles/models/GameRecord.dart';
-import 'package:lab_moviles/ui/screens/HistoryScreen.dart';
-import 'package:lab_moviles/ui/screens/MenuScreen.dart';
-import 'package:lab_moviles/ui/screens/PegSolitaireScreen.dart';
-import 'package:lab_moviles/ui/screens/RulesScreen.dart';
+import 'package:lab_moviles/models/game_record.dart';
+import 'package:lab_moviles/ui/screens/history_screen.dart';
+import 'package:lab_moviles/ui/screens/menu_screen.dart';
+import 'package:lab_moviles/ui/screens/peg_solitaire_screen.dart';
+import 'package:lab_moviles/ui/screens/rules_screen.dart';
 
 void main() {
   runApp(const PegSolitaireApp());
