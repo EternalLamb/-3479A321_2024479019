@@ -4,9 +4,36 @@ import 'package:lab_moviles/ui/screens/history_screen.dart';
 import 'package:lab_moviles/ui/screens/menu_screen.dart';
 import 'package:lab_moviles/ui/screens/peg_solitaire_screen.dart';
 import 'package:lab_moviles/ui/screens/rules_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:lab_moviles/models/peg_solitaire_view_model.dart';
 
 void main() {
-  runApp(const PegSolitaireApp());
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Solitario de Clavijas',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        useMaterial3: true,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MenuScreen(),
+        '/game': (context) => ChangeNotifierProvider(
+          create: (_) => PegSolitaireViewModel(),
+          child: const PegSolitaireScreen(),
+        ),
+        '/history': (context) => const HistoryScreen(records: []),
+        '/rules': (context) => const RulesScreen(),
+      },
+    );
+  }
 }
 
 class PegSolitaireApp extends StatelessWidget {
