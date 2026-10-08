@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:lab_moviles/models/board_position.dart';
 import 'package:lab_moviles/core/enums/cell_type.dart';
+import 'package:lab_moviles/services/audio_service.dart';
 
 class PegSolitaireViewModel extends ChangeNotifier {
   static const int gridSize = 7;
@@ -69,6 +70,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (_selectedPosition == null) {
       if (tappedType == CellType.occupiedPeg) {
         _selectedPosition = pos;
+        AudioService.instance.playSelect(); // Reproducir sonido de selección
         notifyListeners();
       }
       return;
@@ -87,6 +89,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     // Transición 1.2: Pulsar sobre otra clavija propia -> Alternar selección
     if (tappedType == CellType.occupiedPeg) {
       _selectedPosition = pos;
+      AudioService.instance.playSelect(); // Reproducir sonido de selección
       notifyListeners();
       return;
     }
@@ -95,6 +98,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (tappedType == CellType.emptyHole) {
       if (_isValidMove(origin, pos)) {
         _executeMove(origin, pos);
+        AudioService.instance.playJump();
         _selectedPosition = null; // Regreso automático a IDLE tras el salto
         _evaluateGameTermination();
         notifyListeners();
@@ -141,19 +145,18 @@ class PegSolitaireViewModel extends ChangeNotifier {
   }
 
   // 4. Algoritmo para determinar el término de la partida
-
   void _evaluateGameTermination() {
     // Condición de Victoria: Queda exactamente 1 clavija en el tablero
     if (_remainingPegs == 1) {
       _isGameOver = true;
       _isVictory = true;
-      return;
+      AudioService.instance.playGameOver();
     }
-
     // Finalización por estancamiento: No quedan saltos ortogonales válidos
-    if (!_hasValidMovesRemaining()) {
+    else if (!_hasValidMovesRemaining()) {
       _isGameOver = true;
       _isVictory = false;
+      AudioService.instance.playGameOver();
     }
   }
 
