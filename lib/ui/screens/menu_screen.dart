@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-
-import 'package:lab_moviles/ui/screens/PegSolitaireScreen.dart';
-import 'package:lab_moviles/ui/screens/RulesScreen.dart';
-import 'package:lab_moviles/ui/screens/HistoryScreen.dart';
-
-import 'package:logger/logger.dart';
+import 'package:lab_moviles/ui/screens/rules_screen.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final Logger _logger = Logger();
     return Scaffold(
       appBar: AppBar(title: const Text('Solitario Inglés')),
       body: Center(
@@ -20,11 +14,7 @@ class MenuScreen extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                _logger.i('Navegando a PegSolitaireScreen desde MenuScreen');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PegSolitaireScreen()),
-                );
+                Navigator.pushNamed(context, '/game');
               },
               child: const Text('Jugar'),
             ),

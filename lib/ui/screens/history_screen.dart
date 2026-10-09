@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lab_moviles/models/GameRecord.dart';
+import 'package:lab_moviles/models/game_record.dart';
 
 class HistoryScreen extends StatelessWidget {
   final List<GameRecord> records;
