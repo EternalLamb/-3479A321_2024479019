@@ -1,19 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:lab_moviles/ui/widgets/peg_cell.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:logger/logger.dart';
+
+import 'package:lab_moviles/ui/widgets/peg_cell.dart';
 import 'package:lab_moviles/models/board_position.dart';
 import 'package:lab_moviles/models/game_record.dart';
 import 'package:lab_moviles/core/enums/cell_type.dart';
 import 'package:lab_moviles/models/peg_solitaire_view_model.dart';
 import 'package:lab_moviles/ui/screens/history_screen.dart';
-import 'package:logger/logger.dart';
+import 'package:lab_moviles/services/shake_detector.dart';
 
-final _logger = Logger();
-
-class PegSolitaireScreen extends StatelessWidget {
+class PegSolitaireScreen extends StatefulWidget {
   final List<GameRecord> gameHistory;
 
   const PegSolitaireScreen({super.key, this.gameHistory = const []});
+
+  @override
+  State<PegSolitaireScreen> createState() => _PegSolitaireScreenState();
+}
+
+class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
+  // 1. Declaración de la instancia del servicio y el logger
+  ShakeDetectorService? _shakeDetector;
+  final Logger _logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 2. Inicialización del detector de agitamiento
+    _shakeDetector = ShakeDetectorService(
+      shakeThreshold:
+          2.5, // Sensibilidad ajustada para emulador y prueba rápida
+      onShake: _handleShakeEvent,
+    );
+    _shakeDetector?.startListening();
+  }
+
+  // 3. Manejador del evento de agitamiento
+  void _handleShakeEvent() {
+    final vm = context.read<PegSolitaireViewModel>();
+
+    // Regla de negocio: Reinicia la partida cuando termina el juego
+    if (vm.isGameOver) {
+      _logger.i('Shake validado: Partida finalizada. Reiniciando tablero.');
+      vm.initializeBoard();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('¡Tablero reiniciado por movimiento físico!'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } else {
+      _logger.d('Shake ignorado: La partida se encuentra activa.');
+    }
+  }
+
+  @override
+  void dispose() {
+    // 4. Liberación del sensor para evitar fugas de memoria
+    _shakeDetector?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +73,21 @@ class PegSolitaireScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Solitario Ingles'),
+        title: const Text('Solitario Inglés'),
         actions: [
-          // Botón para reiniciar el tablero
+          // Botón para compartir resultados
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: 'Compartir Resultado',
+            onPressed: () async {
+              final String message =
+                  'He completado una partida de Peg Solitaire en ${vm.moveCount} movimientos '
+                  'dejando solo ${vm.remainingPegs} piezas!';
+
+              await SharePlus.instance.share(ShareParams(text: message));
+            },
+          ),
+          // Botón para reiniciar el tablero manualmente
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             tooltip: 'Reiniciar Tablero',
@@ -38,7 +102,8 @@ class PegSolitaireScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HistoryScreen(records: gameHistory),
+                  builder: (context) =>
+                      HistoryScreen(records: widget.gameHistory),
                 ),
               );
             },
