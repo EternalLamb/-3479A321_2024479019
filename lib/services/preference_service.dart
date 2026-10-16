@@ -1,10 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:logger/logger.dart';
+import 'package:lab_moviles/Applogger.dart';
 
 class PreferencesService {
   //Definicion de variables para persistencia de sonido, vibración y puntaje
   final SharedPreferences _prefs;
-  final Logger _logger = Logger();
+
   final _keySoundEnabled = 'sound_enabled';
   final _keyVibrationEnabled = 'vibration_enabled';
   final _keyBestScore = 'best_score';
@@ -21,7 +21,7 @@ class PreferencesService {
   int get bestRemainingPegs => _prefs.getInt(_keyBestScore) ?? 32;
   //Ejemplo de Set
   Future<bool> setSoundEnabled(bool enabled) async {
-    _logger.i('PreferencesService: Sonido configurado en $enabled');
+    AppLogger.info('PreferencesService: Sonido configurado en $enabled');
     return await _prefs.setBool(_keySoundEnabled, enabled);
   }
 

@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:logger/logger.dart';
+import 'package:lab_moviles/Applogger.dart';
 import 'package:lab_moviles/models/board_position.dart';
 import 'package:lab_moviles/core/enums/cell_type.dart';
 import 'package:lab_moviles/services/audio_service.dart';
-// Importa tus dependencias y modelos creados en los pasos anteriores:
 import 'package:lab_moviles/models/move_record.dart';
 import 'package:lab_moviles/models/game_record.dart';
 import 'package:lab_moviles/repositories/game_history_repositories.dart';
@@ -11,7 +10,6 @@ import 'package:lab_moviles/services/preference_service.dart';
 
 class PegSolitaireViewModel extends ChangeNotifier {
   static const int gridSize = 7;
-  final Logger _logger = Logger();
 
   // Estado interno matricial y contadores
   late List<List<CellType>> _board;
@@ -181,9 +179,9 @@ class PegSolitaireViewModel extends ChangeNotifier {
     try {
       await _historyRepository?.saveGame(record);
       await _preferencesService?.checkAndSaveRecord(_remainingPegs);
-      _logger.i('Partida persistida con éxito en disco.');
+      AppLogger.info('Partida persistida con éxito en disco.');
     } catch (e) {
-      _logger.e('Error al guardar resumen en ViewModel: $e');
+      AppLogger.error('Error al guardar resumen en ViewModel: $e');
     }
   }
 
