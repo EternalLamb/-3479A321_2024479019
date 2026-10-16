@@ -77,14 +77,12 @@ class PegSolitaireViewModel extends ChangeNotifier {
     return _board[row][col];
   }
 
-  // 1. Control de interacciones y Máquina de Estados Finitos (FSM)
   void onCellTapped(BoardPosition pos) {
     if (_isGameOver) return;
 
     final CellType tappedType = _board[pos.row][pos.col];
     if (tappedType == CellType.voidCell) return;
 
-    // ESTADO 0: IDLE (No hay celda origen seleccionada)
     if (_selectedPosition == null) {
       if (tappedType == CellType.occupiedPeg) {
         _selectedPosition = pos;
@@ -93,18 +91,14 @@ class PegSolitaireViewModel extends ChangeNotifier {
       }
       return;
     }
-
-    // ESTADO 1: SOURCE_SELECTED (Existe una clavija origen activa)
     final BoardPosition origin = _selectedPosition!;
 
-    // Transición 1.1: Pulsar sobre la misma casilla -> Deselección (Toggle)
     if (origin == pos) {
       _selectedPosition = null;
       notifyListeners();
       return;
     }
 
-    // Transición 1.2: Pulsar sobre otra clavija propia -> Alternar selección
     if (tappedType == CellType.occupiedPeg) {
       _selectedPosition = pos;
       AudioService.instance.playSelect();
@@ -112,7 +106,6 @@ class PegSolitaireViewModel extends ChangeNotifier {
       return;
     }
 
-    // Transición 1.3: Pulsar sobre un hueco vacío -> Evaluar salto y captura
     if (tappedType == CellType.emptyHole) {
       if (_isValidMove(origin, pos)) {
         _executeMove(origin, pos);
@@ -155,13 +148,11 @@ class PegSolitaireViewModel extends ChangeNotifier {
     _remainingPegs--;
     _moveCount++;
 
-    // Registrar cada salto en la lista para el historial/replay[cite: 8]
     _movesHistory.add(
       MoveRecord(from: from, to: to, timestamp: DateTime.now()),
     );
   }
 
-  // 4. Algoritmo para determinar el término de la partida
   void _evaluateGameTermination() {
     if (_remainingPegs == 1) {
       _isGameOver = true;
@@ -176,7 +167,6 @@ class PegSolitaireViewModel extends ChangeNotifier {
     }
   }
 
-  // 5. Método de persistencia automática al finalizar la partida
   Future<void> _persistCompletedGame() async {
     final record = GameRecord(
       id: 'REC-${DateTime.now().millisecondsSinceEpoch}',
