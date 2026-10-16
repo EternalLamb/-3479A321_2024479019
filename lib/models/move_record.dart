@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lab_moviles/models/board_position.dart';
 
 @immutable
@@ -6,6 +6,7 @@ class MoveRecord {
   final BoardPosition from;
   final BoardPosition to;
   final DateTime timestamp;
+
   const MoveRecord({
     required this.from,
     required this.to,
@@ -29,6 +30,7 @@ class MoveRecord {
       timestamp: DateTime.parse(json['timestamp'] as String),
     );
   }
+
   @override
   String toString() => 'MoveRecord($from -> $to at $timestamp)';
 }
