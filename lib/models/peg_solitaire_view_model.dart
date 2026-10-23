@@ -19,9 +19,10 @@ class PegSolitaireViewModel extends ChangeNotifier {
   bool _isGameOver = false;
   bool _isVictory = false;
 
-  IGameHistoryRepository? _historyRepository;
-  PreferencesService? _preferencesService;
+  final IGameHistoryRepository? _historyRepository;
+  final PreferencesService? _preferencesService;
   final List<MoveRecord> _movesHistory = [];
+  final AudioService? _audioService;
 
   List<List<CellType>> get board => _board;
   BoardPosition? get selectedPosition => _selectedPosition;
@@ -31,12 +32,13 @@ class PegSolitaireViewModel extends ChangeNotifier {
   bool get isVictory => _isVictory;
   List<MoveRecord> get movesHistory => List.unmodifiable(_movesHistory);
 
-  // CONSTRUCTOR ACTUALIZADO CON INYECCIÓN DE DEPENDENCIAS (DIP)
   PegSolitaireViewModel({
     IGameHistoryRepository? historyRepository,
     PreferencesService? preferencesService,
+    AudioService? audioService,
   }) : _historyRepository = historyRepository,
-       _preferencesService = preferencesService {
+       _preferencesService = preferencesService,
+       _audioService = audioService {
     initializeBoard();
   }
 
@@ -84,11 +86,12 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (_selectedPosition == null) {
       if (tappedType == CellType.occupiedPeg) {
         _selectedPosition = pos;
-        AudioService.instance.playSelect();
+        _audioService?.playSelect();
         notifyListeners();
       }
       return;
     }
+
     final BoardPosition origin = _selectedPosition!;
 
     if (origin == pos) {
@@ -99,7 +102,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
 
     if (tappedType == CellType.occupiedPeg) {
       _selectedPosition = pos;
-      AudioService.instance.playSelect();
+      _audioService?.playSelect();
       notifyListeners();
       return;
     }
@@ -107,7 +110,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (tappedType == CellType.emptyHole) {
       if (_isValidMove(origin, pos)) {
         _executeMove(origin, pos);
-        AudioService.instance.playJump();
+        _audioService?.playJump();
         _selectedPosition = null;
         _evaluateGameTermination();
         notifyListeners();
@@ -115,7 +118,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     }
   }
 
-  // 2. Validación de Saltos Ortogonales Estrictos
+  // Validación de Saltos Ortogonales Estrictos
   bool _isValidMove(BoardPosition from, BoardPosition to) {
     final int rowDelta = (from.row - to.row).abs();
     final int colDelta = (from.col - to.col).abs();
@@ -134,7 +137,7 @@ class PegSolitaireViewModel extends ChangeNotifier {
     return true;
   }
 
-  // 3. Mutación en la matriz y registro del movimiento
+  // Mutación en la matriz y registro del movimiento
   void _executeMove(BoardPosition from, BoardPosition to) {
     final int midRow = (from.row + to.row) ~/ 2;
     final int midCol = (from.col + to.col) ~/ 2;
@@ -155,12 +158,12 @@ class PegSolitaireViewModel extends ChangeNotifier {
     if (_remainingPegs == 1) {
       _isGameOver = true;
       _isVictory = true;
-      AudioService.instance.playGameOver();
+      _audioService?.playGameOver();
       _persistCompletedGame();
     } else if (!_hasValidMovesRemaining()) {
       _isGameOver = true;
       _isVictory = false;
-      AudioService.instance.playGameOver();
+      _audioService?.playGameOver();
       _persistCompletedGame();
     }
   }

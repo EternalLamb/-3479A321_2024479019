@@ -6,9 +6,29 @@ import 'package:lab_moviles/ui/screens/peg_solitaire_screen.dart';
 import 'package:lab_moviles/ui/screens/rules_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:lab_moviles/models/peg_solitaire_view_model.dart';
+import 'package:lab_moviles/services/audio_service.dart';
+import 'package:lab_moviles/services/preference_service.dart';
+import 'package:lab_moviles/repositories/game_history_repositories.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final audioService = AudioService.instance;
+
+  final preferencesService = await PreferencesService.create();
+
+  final historyRepository = JsonFileHistoryRepository();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider<PreferencesService>.value(value: preferencesService),
+        Provider<AudioService>.value(value: audioService),
+        Provider<IGameHistoryRepository>.value(value: historyRepository),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
