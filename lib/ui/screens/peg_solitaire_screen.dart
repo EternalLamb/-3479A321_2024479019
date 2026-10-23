@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter/services.dart';
+
+import 'package:share_plus/share_plus.dart';
+import 'package:lab_moviles/services/screenshot_service.dart'; // Ajusta la ruta según tu estructura
 
 import 'package:lab_moviles/ui/widgets/peg_cell.dart';
 import 'package:lab_moviles/models/board_position.dart';
@@ -24,6 +28,7 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
   // 1. Declaración de la instancia del servicio y el logger
   ShakeDetectorService? _shakeDetector;
   final Logger _logger = Logger();
+  final GlobalKey _boardBoundaryKey = GlobalKey();
 
   @override
   void initState() {
@@ -80,11 +85,17 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
             icon: const Icon(Icons.share),
             tooltip: 'Compartir Resultado',
             onPressed: () async {
-              final String message =
-                  'He completado una partida de Peg Solitaire en ${vm.moveCount} movimientos '
-                  'dejando solo ${vm.remainingPegs} piezas!';
-
-              await SharePlus.instance.share(ShareParams(text: message));
+              // Aquí pegas el código:
+              HapticFeedback.mediumImpact();
+              final imagePath = await ScreenshotService.captureWidgetToImage(
+                _boardBoundaryKey,
+              );
+              if (imagePath != null) {
+                // Asegúrate de tener importado 'package:share_plus/share_plus.dart';
+                await Share.shareXFiles([
+                  XFile(imagePath),
+                ], text: '¡Mira mi avance en Peg Solitaire!');
+              }
             },
           ),
           // Botón para reiniciar el tablero manualmente
@@ -99,6 +110,7 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
             icon: const Icon(Icons.history),
             tooltip: 'Ver Historial',
             onPressed: () {
+              HapticFeedback.mediumImpact();
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -116,7 +128,12 @@ class _PegSolitaireScreenState extends State<PegSolitaireScreen> {
             _buildScoreBoard(context, vm),
             const Divider(height: 1),
             // Área de Juego (Grid de 7x7)
-            Expanded(child: _buildGameBoard(context, vm)),
+            Expanded(
+              child: RepaintBoundary(
+                key: _boardBoundaryKey,
+                child: _buildGameBoard(context, vm),
+              ),
+            ),
             // Mensaje o Banner de Finalización
             if (vm.isGameOver) _buildGameOverBanner(context, vm),
           ],
